@@ -19,10 +19,16 @@ import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 
 import { useEditorStore } from "@/features/documents/core/hooks";
+import {
+  FontSizeExtension,
+  LineHightExtension,
+} from "@/features/documents/core/extensions";
 
 const Editor = () => {
   const { setEditor } = useEditorStore();
   const editor = useEditor({
+    autofocus: true,
+    immediatelyRender: false,
     onCreate: ({ editor }) => setEditor(editor),
     onUpdate: ({ editor }) => setEditor(editor),
     onSelectionUpdate: ({ editor }) => setEditor(editor),
@@ -40,6 +46,8 @@ const Editor = () => {
     },
     extensions: [
       StarterKit,
+      FontSizeExtension,
+      LineHightExtension,
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),

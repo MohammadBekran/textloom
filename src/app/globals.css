@@ -87,6 +87,12 @@ body {
   }
 }
 
+@layer utilities {
+  .font-size-button {
+    @apply size-7 flex justify-center items-center rounded-sm shrink-0 hover:bg-neutral-200/80;
+  }
+}
+
 .tiptap {
   /* Link styles */
   a {
