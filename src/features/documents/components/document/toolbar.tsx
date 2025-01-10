@@ -12,6 +12,7 @@ import {
   ImageIcon,
   ItalicIcon,
   Link2Icon,
+  ListCollapseIcon,
   ListIcon,
   ListTodoIcon,
   MessageSquarePlusIcon,
@@ -55,6 +56,52 @@ interface IToolbarButtonProps {
   isActive?: boolean;
   onClick?: () => void;
 }
+
+const LineHeightButton = () => {
+  const { editor } = useEditorStore();
+
+  const LINE_HEIGHT_OPTIONS = [
+    { label: "Default", value: "normal" },
+    { label: "Single", value: "1" },
+    { label: "1.15", value: "1.15" },
+    { label: "1.5", value: "1.5" },
+    { label: "Double", value: "2" },
+  ];
+
+  const lineHeight = editor?.getAttributes("paragraph").lineHeight;
+
+  const handleLineHeightClick = (lineHeight: string) => {
+    console.log({ lineHeight });
+
+    editor?.chain().focus().setLineHeight(lineHeight).run();
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
+          <ListCollapseIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="flex flex-col gap-y-1 p-1">
+        {LINE_HEIGHT_OPTIONS.map(({ label, value }) => (
+          <button
+            key={value}
+            className={cn(
+              "flex items-center gap-x-2 rounded-sm py-1 px-2 hover:bg-neutral-200/80",
+              {
+                "bg-neutral-200/80": lineHeight === value,
+              }
+            )}
+            onClick={() => handleLineHeightClick(value)}
+          >
+            <span className="text-sm">{label}</span>
+          </button>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const FontSizeButton = () => {
   const { editor } = useEditorStore();
@@ -108,7 +155,7 @@ const FontSizeButton = () => {
   const decrement = () => {
     const newSize = parseInt(fontSize) - 1;
 
-    updateFontSize(newSize.toString());
+    if (newSize > 0) updateFontSize(newSize.toString());
   };
 
   return (
@@ -663,6 +710,7 @@ const Toolbar = () => {
       <LinkButton />
       <ImageButton />
       <AlignmentButton />
+      <LineHeightButton />
       <ListButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
       {TOOLBAR_SECTIONS[2].map((item) => (

@@ -8,57 +8,11 @@ declare module "@tiptap/core" {
       unsetFontSize: () => ReturnType;
     };
     lineHeight: {
-      setLineHeight: (lineHight: string) => ReturnType;
+      setLineHeight: (lineHeight: string) => ReturnType;
       unsetLineHeight: () => ReturnType;
     };
   }
 }
-
-// export const FontSizeExtension = Extension.create({
-//   name: "fontSize",
-//   addOptions() {
-//     return {
-//       types: ["textStyle"],
-//     };
-//   },
-//   addGlobalAttributes() {
-//     return [
-//       {
-//         types: this.options.types,
-//         attributes: {
-//           fontSize: {
-//             default: null,
-//             parseHTML: (element) => element.style.fontSize,
-//             renderHTML: (attributes) => {
-//               if (!attributes.fontSize) return {};
-
-//               return {
-//                 style: `font-size: ${attributes.fontSize}`,
-//               };
-//             },
-//           },
-//         },
-//       },
-//     ];
-//   },
-//   addCommands() {
-//     return {
-//       setFontSize:
-//         (fontSize: string) =>
-//         ({ chain }) => {
-//           return chain().setMark("textStyle", { fontSize }).run();
-//         },
-//       unsetFontSize:
-//         () =>
-//         ({ chain }) => {
-//           return chain()
-//             .setMark("textStyle", { fontSize: null })
-//             .removeEmptyTextStyle()
-//             .run();
-//         },
-//     };
-//   },
-// });
 
 export const FontSizeExtension = Extension.create({
   name: "fontSize",
@@ -76,9 +30,7 @@ export const FontSizeExtension = Extension.create({
             default: null,
             parseHTML: (element) => element.style.fontSize,
             renderHTML: (attributes) => {
-              if (!attributes.fontSize) {
-                return {};
-              }
+              if (!attributes.fontSize) return {};
 
               return {
                 style: `font-size: ${attributes.fontSize}`,
@@ -108,8 +60,8 @@ export const FontSizeExtension = Extension.create({
   },
 });
 
-export const LineHightExtension = Extension.create({
-  name: "lineHight",
+export const LineHeightExtension = Extension.create({
+  name: "lineHeight",
   addOptions() {
     return {
       types: ["paragraph", "heading"],
@@ -122,9 +74,9 @@ export const LineHightExtension = Extension.create({
         types: this.options.types,
         attributes: {
           lineHeight: {
-            default: this.options.defaultLineHight,
+            default: this.options.defaultLineHeight,
             renderHTML: (attributes) => {
-              if (!attributes.lineHight) return {};
+              if (!attributes.lineHeight) return {};
 
               return {
                 style: `line-height: ${attributes.lineHeight}`,
