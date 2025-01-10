@@ -2,12 +2,17 @@
 
 import type { Level } from "@tiptap/extension-heading";
 import {
+  AlignCenterIcon,
+  AlignJustifyIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
   BoldIcon,
   ChevronDownIcon,
   HighlighterIcon,
   ImageIcon,
   ItalicIcon,
   Link2Icon,
+  ListIcon,
   ListTodoIcon,
   MessageSquarePlusIcon,
   PrinterIcon,
@@ -48,6 +53,114 @@ interface IToolbarButtonProps {
   isActive?: boolean;
   onClick?: () => void;
 }
+
+const ListButton = () => {
+  const { editor } = useEditorStore();
+
+  const LIST_OPTIONS = [
+    {
+      label: "Bullet List",
+      icon: ListIcon,
+      isActive: () => editor?.isActive("bulletList"),
+      onClick: () => editor?.chain().focus().toggleBulletList().run(),
+    },
+    {
+      label: "Ordered List",
+      icon: ListIcon,
+      isActive: () => editor?.isActive("orderedList"),
+      onClick: () => editor?.chain().focus().toggleOrderedList().run(),
+    },
+  ];
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
+          <ListIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="flex flex-col gap-y-1 p-1">
+        {LIST_OPTIONS.map(({ label, icon: Icon, isActive, onClick }) => (
+          <button
+            key={label}
+            className={cn(
+              "flex items-center gap-x-2 rounded-sm py-1 px-2 hover:bg-neutral-200/80",
+              {
+                "bg-neutral-200/80": isActive(),
+              }
+            )}
+            onClick={onClick}
+          >
+            <Icon className="size-4" />
+            <span className="text-sm">{label}</span>
+          </button>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const AlignmentButton = () => {
+  const { editor } = useEditorStore();
+
+  const isAlignmentActive = (alignment: string) => {
+    editor?.isActive({ textAlign: alignment });
+  };
+
+  const ALIGNMENT_OPTIONS = [
+    {
+      label: "Align Left",
+      value: "left",
+      icon: AlignLeftIcon,
+    },
+    {
+      label: "Align Center",
+      value: "center",
+      icon: AlignCenterIcon,
+    },
+    {
+      label: "Align Right",
+      value: "right",
+      icon: AlignRightIcon,
+    },
+    {
+      label: "Align Justify",
+      value: "justify",
+      icon: AlignJustifyIcon,
+    },
+  ];
+
+  const handleAlignClick = (alignment: string) => {
+    editor?.chain().focus().setTextAlign(alignment).run();
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
+          <AlignLeftIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="flex flex-col gap-y-1 p-1">
+        {ALIGNMENT_OPTIONS.map(({ label, value, icon: Icon }) => (
+          <button
+            key={value}
+            className={cn(
+              "flex items-center gap-x-2 rounded-sm py-1 px-2 hover:bg-neutral-200/80",
+              {
+                "bg-neutral-200/80": isAlignmentActive(value),
+              }
+            )}
+            onClick={() => handleAlignClick(value)}
+          >
+            <Icon className="size-4" />
+            <span className="text-sm">{label}</span>
+          </button>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const ImageButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -462,6 +575,8 @@ const Toolbar = () => {
       <HighlightColorButton />
       <LinkButton />
       <ImageButton />
+      <AlignmentButton />
+      <ListButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
       {TOOLBAR_SECTIONS[2].map((item) => (
         <ToolbarButton key={item.label} {...item} />
