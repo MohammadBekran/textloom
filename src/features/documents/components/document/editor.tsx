@@ -13,6 +13,8 @@ import ImageResize from "tiptap-extension-resize-image";
 import Underline from "@tiptap/extension-underline";
 import FontFamily from "@tiptap/extension-font-family";
 import TextStyle from "@tiptap/extension-text-style";
+import Highlight from "@tiptap/extension-highlight";
+import { Color } from "@tiptap/extension-color";
 
 import { useEditorStore } from "@/features/documents/core/hooks";
 
@@ -36,6 +38,10 @@ const Editor = () => {
     },
     extensions: [
       StarterKit,
+      Color,
+      Highlight.configure({
+        multicolor: true,
+      }),
       TextStyle,
       FontFamily,
       Underline,
@@ -50,22 +56,6 @@ const Editor = () => {
         nested: true,
       }),
     ],
-    content: `
-        <table>
-          <tbody>
-            <tr>
-              <th>Name</th>
-              <th colspan="3">Description</th>
-            </tr>
-            <tr>
-              <td>Cyndi Lauper</td>
-              <td>Singer</td>
-              <td>Songwriter</td>
-              <td>Actress</td>
-            </tr>
-          </tbody>
-        </table>
-      `,
   });
 
   return (
