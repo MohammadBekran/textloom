@@ -1,7 +1,13 @@
 "use client";
 
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   BoldIcon,
+  ChevronDownIcon,
   ItalicIcon,
   ListTodoIcon,
   MessageSquarePlusIcon,
@@ -13,6 +19,7 @@ import {
   Undo2Icon,
   type LucideIcon,
 } from "lucide-react";
+import type { Level } from "@tiptap/extension-heading";
 
 import { useEditorStore } from "@/features/documents/core/hooks";
 
@@ -24,6 +31,142 @@ interface IToolbarButtonProps {
   isActive?: boolean;
   onClick?: () => void;
 }
+
+const HeadingLevelButton = () => {
+  const { editor } = useEditorStore();
+
+  const HEADINGS = [
+    {
+      label: "Normal text",
+      value: 0,
+      fontSize: "16px",
+    },
+    {
+      label: "Heading 1",
+      value: 1,
+      fontSize: "32px",
+    },
+    {
+      label: "Heading 2",
+      value: 2,
+      fontSize: "24px",
+    },
+    {
+      label: "Heading 3",
+      value: 3,
+      fontSize: "20px",
+    },
+    {
+      label: "Heading 4",
+      value: 4,
+      fontSize: "18px",
+    },
+    {
+      label: "Heading 5",
+      value: 5,
+      fontSize: "16px",
+    },
+  ];
+
+  const getCurrentHeading = () => {
+    for (const level of HEADINGS) {
+      console.log(level);
+
+      if (editor?.isActive("heading", { level: level.value }))
+        return `Heading ${level.value}`;
+    }
+
+    return "Normal text";
+  };
+
+  const handleHeadingChange = (value: number) => {
+    if (value === 0) {
+      editor?.chain().focus().setParagraph().run();
+    } else {
+      editor
+        ?.chain()
+        .focus()
+        .toggleHeading({ level: value as Level })
+        .run();
+    }
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
+          <span className="truncate">{getCurrentHeading()}</span>
+          <ChevronDownIcon className="size-4 shrink-0 ml-2" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="flex flex-col gap-y-1 p-1">
+        {HEADINGS.map(({ label, value, fontSize }) => (
+          <button
+            key={value}
+            style={{ fontSize }}
+            className={cn(
+              "flex items-center gap-x-2 rounded-sm py-1 px-2 hover:bg-neutral-200/80",
+              {
+                "bg-neutral-200/80":
+                  (value === 0 && !editor?.isActive("heading")) ||
+                  editor?.isActive("heading", { level: value }),
+              }
+            )}
+            onClick={() => handleHeadingChange(value)}
+          >
+            {label}
+          </button>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const FontFamilyButton = () => {
+  const { editor } = useEditorStore();
+
+  const fontFamily = editor?.getAttributes("textStyle").fontFamily || "Arial";
+
+  const FONTS = [
+    { label: "Arial", value: "Arial" },
+    { label: "Times New Roman", value: "Times New Roman" },
+    { label: "Courier New", value: "Courier New" },
+    { label: "Georgia", value: "Georgia" },
+    { label: "Verdana", value: "Verdana" },
+  ];
+
+  const handleFontChange = (value: string) => {
+    editor?.chain().focus().setFontFamily(value).run();
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="w-[120px] h-7 overflow-hidden flex justify-between items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
+          <span className="truncate">{fontFamily}</span>
+          <ChevronDownIcon className="size-4 shrink-0" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="flex flex-col gap-y-1 p-1">
+        {FONTS.map(({ label, value }) => (
+          <button
+            key={value}
+            style={{ fontFamily: value }}
+            className={cn(
+              "flex items-center gap-x-2 rounded-sm py-1 px-2 hover:bg-neutral-200/80",
+              {
+                "bg-neutral-200/80": fontFamily === value,
+              }
+            )}
+            onClick={() => handleFontChange(value)}
+          >
+            <span className="text-sm">{label}</span>
+          </button>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const ToolbarButton = ({
   icon: Icon,
@@ -128,6 +271,10 @@ const Toolbar = () => {
       {TOOLBAR_SECTIONS[0].map((item) => (
         <ToolbarButton key={item.label} {...item} />
       ))}
+      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      <FontFamilyButton />
+      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      <HeadingLevelButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
       {TOOLBAR_SECTIONS[1].map((item) => (
         <ToolbarButton key={item.label} {...item} />
