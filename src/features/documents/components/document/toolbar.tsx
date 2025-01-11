@@ -71,8 +71,6 @@ const LineHeightButton = () => {
   const lineHeight = editor?.getAttributes("paragraph").lineHeight;
 
   const handleLineHeightClick = (lineHeight: string) => {
-    console.log({ lineHeight });
-
     editor?.chain().focus().setLineHeight(lineHeight).run();
   };
 

@@ -1,14 +1,6 @@
 import Document from "@/features/documents/components/document";
 
-const DocumentPage = async ({
-  params,
-}: {
-  params: Promise<{ documentId: string }>;
-}) => {
-  const { documentId } = await params;
-
-  console.log({ documentId });
-
+const DocumentPage = async () => {
   return <Document />;
 };
 

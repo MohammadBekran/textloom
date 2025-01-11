@@ -129,8 +129,6 @@ const Marker = ({
   onMouseDown,
   onDoubleClick,
 }: IMarkerProps) => {
-  console.log({ isDragging });
-
   return (
     <div
       className="absolute top-0 w-4 h-full z-[5] cursor-ew-resize group -ml-2"

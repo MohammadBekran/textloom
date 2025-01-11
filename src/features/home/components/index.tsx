@@ -1,5 +1,6 @@
 import Header from "@/features/home/components/header";
 import TemplatesGallery from "@/features/home/components/templates-gallery";
+import DocumentsTable from "@/features/home/components/documents-table";
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
       </div>
       <div className="mt-16">
         <TemplatesGallery />
+        <DocumentsTable />
       </div>
     </div>
   );

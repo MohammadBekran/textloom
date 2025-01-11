@@ -1,22 +1,33 @@
 "use client";
 
+import { useRef } from "react";
 import { SearchIcon } from "lucide-react";
-import { useDebounce } from "use-debounce";
 
 import { useSearch } from "@/features/home/core/hooks";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-const Search = () => {
+const Search = ({ hideOnMobile }: { hideOnMobile: boolean }) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const { search, setSearch } = useSearch();
-  const [debouncedValue] = useDebounce(search, 1000);
 
-  console.log({ debouncedValue });
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (searchInputRef.current) setSearch(searchInputRef.current.value);
+  };
 
   return (
-    <form className="w-full max-w-[720px] relative">
+    <form
+      className={cn("w-full max-w-[720px] relative", {
+        "hidden lg:block": hideOnMobile,
+      })}
+      onSubmit={handleSubmit}
+    >
       <Input
+        ref={searchInputRef}
         value={search}
         placeholder="Search..."
         className="w-full h-[48px] rounded-full px-14 border-none bg-[#F0F4F8] placeholder:text-neutral-800 focus:bg-white focus-visible:shadow-[0_1px_1px_0_rgba(65,69,73,.3),0_1px_1px_0_rgba(65,69,73,.15)]  md:text-base focus-visible:ring-0"
