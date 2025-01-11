@@ -23,6 +23,7 @@ import {
   FontSizeExtension,
   LineHeightExtension,
 } from "@/features/documents/core/extensions";
+import Ruler from "@/features/documents/components/document/ruler";
 
 const Editor = () => {
   const { setEditor } = useEditorStore();
@@ -81,6 +82,7 @@ const Editor = () => {
 
   return (
     <div className="size-full overflow-x-auto px-4 bg-[#F9FBFD] print:p-0 print:bg-white print:overflow-visible">
+      <Ruler />
       <div className="w-[816px] min-w-max flex justify-center mx-auto py-4 print:py-0 after:print:w-full print:min-w-0">
         <EditorContent editor={editor} />
       </div>

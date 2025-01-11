@@ -91,6 +91,9 @@ body {
   .font-size-button {
     @apply size-7 flex justify-center items-center rounded-sm shrink-0 hover:bg-neutral-200/80;
   }
+  .menubar-trigger {
+    @apply text-sm font-normal py-0.5 px-[7px] rounded-sm hover:bg-muted h-auto;
+  }
 }
 
 .tiptap {
