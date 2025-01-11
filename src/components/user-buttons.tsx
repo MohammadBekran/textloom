@@ -5,6 +5,7 @@ import {
   OrganizationSwitcher,
   useOrganization,
   UserButton,
+  ClerkLoaded,
 } from "@clerk/nextjs";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -22,13 +23,15 @@ const UserButtons = () => {
 
   return (
     <div className="flex items-center gap-3 pl-6">
-      <OrganizationSwitcher
-        afterLeaveOrganizationUrl="/"
-        afterCreateOrganizationUrl=""
-        afterSelectOrganizationUrl=""
-        afterSelectPersonalUrl=""
-      />
-      <UserButton />
+      <ClerkLoaded>
+        <OrganizationSwitcher
+          afterLeaveOrganizationUrl="/"
+          afterCreateOrganizationUrl=""
+          afterSelectOrganizationUrl=""
+          afterSelectPersonalUrl=""
+        />
+        <UserButton />
+      </ClerkLoaded>
     </div>
   );
 };

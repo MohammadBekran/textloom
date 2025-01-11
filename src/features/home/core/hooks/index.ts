@@ -1,15 +1,14 @@
-import { useQueryState, parseAsString } from "nuqs";
+import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 
-export const useSearch = () => {
-  const [search, setSearch] = useQueryState(
-    "search",
-    parseAsString.withDefault("").withOptions({
-      clearOnDefault: true,
-    })
-  );
+export const useDocumentsFilter = () => {
+  const [filters, setFilters] = useQueryStates({
+    search: parseAsString.withDefault(""),
+    take: parseAsInteger.withDefault(5),
+    skip: parseAsInteger.withDefault(0),
+  });
 
   return {
-    search,
-    setSearch,
+    filters,
+    setFilters,
   };
 };

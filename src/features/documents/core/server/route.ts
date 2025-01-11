@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
@@ -13,23 +14,41 @@ const app = new Hono()
       "query",
       z.object({
         search: z.string().optional(),
+        take: z.string().optional(),
+        skip: z.string().optional(),
       })
     ),
     async (c) => {
       const auth = getAuth(c);
-      const { search } = c.req.valid("query");
+      const { search, take, skip } = c.req.valid("query");
 
       if (!auth?.userId) return c.json({ error: "Unauthorized" }, 401);
 
+      const where: Prisma.DocumentWhereInput = {
+        ownerId: auth.userId,
+        organizationId: auth.orgId ?? undefined,
+        ...(search?.trim()
+          ? { title: { contains: search.trim(), mode: "insensitive" } }
+          : {}),
+      };
+
       const documents = await prisma.document.findMany({
-        where: {
-          ownerId: auth.userId,
-          organizationId: auth.orgId ?? undefined,
-          ...(search && { title: { contains: search, mode: "insensitive" } }),
-        },
+        where,
+        take: Number(take) ?? 5,
+        skip: Number(skip) ?? 0,
+        orderBy: { createdAt: "desc" },
       });
 
-      return c.json({ data: documents });
+      const totalDocuments = await prisma.document.count({
+        where,
+      });
+
+      const remaining = Math.max(
+        0,
+        totalDocuments - (Number(skip ?? 0) + Number(take ?? 5))
+      );
+
+      return c.json({ data: documents, remaining });
     }
   )
   .post(
