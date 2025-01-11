@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { UserButton } from "@clerk/nextjs";
 
 import Search from "@/features/home/components/search";
 
@@ -10,7 +11,7 @@ const Header = () => {
         <span className="text-xl">TextLoom</span>
       </div>
       <Search />
-      <div />
+      <UserButton />
     </div>
   );
 };
