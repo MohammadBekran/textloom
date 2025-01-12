@@ -18,6 +18,7 @@ import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import ImageResize from "tiptap-extension-resize-image";
+import { useStorage } from "@liveblocks/react";
 
 import Ruler from "@/features/documents/components/document/ruler";
 import {
@@ -30,6 +31,8 @@ import Threads from "@/components/threads";
 
 const Editor = () => {
   const liveblocks = useLiveblocksExtension();
+  const leftMargin = useStorage((root) => root.leftMargin) ?? 56;
+  const rightMargin = useStorage((root) => root.rightMargin) ?? 56;
   const { setEditor } = useEditorStore();
   const editor = useEditor({
     autofocus: true,
@@ -46,7 +49,7 @@ const Editor = () => {
       attributes: {
         class:
           "w-[816px] min-h-[1024px] flex flex-col pt-10 pb-10 pr-14 cursor-text bg-white border border-[#C7C7C7] focus:outline-none print:border-0",
-        style: "padding-left: 56px; padding-right:56px",
+        style: `padding-left: ${leftMargin}px; padding-right:${rightMargin}px`,
       },
     },
     extensions: [
