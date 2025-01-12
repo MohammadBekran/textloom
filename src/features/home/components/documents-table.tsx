@@ -24,7 +24,6 @@ const DocumentsTable = () => {
     query: {
       search: debouncedText ?? undefined,
       take: String(filters.take ?? 5),
-      skip: String(filters.skip ?? 0),
     },
   });
 
@@ -51,7 +50,7 @@ const DocumentsTable = () => {
               <TableHead className="hidden md:table-cell">Created at</TableHead>
             </TableRow>
           </TableHeader>
-          {documents!.data.length === 0 ? (
+          {documents?.data.length === 0 ? (
             <TableBody>
               <TableRow className="hover:bg-transparent">
                 <TableCell

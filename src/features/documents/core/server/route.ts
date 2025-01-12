@@ -15,12 +15,11 @@ const app = new Hono()
       z.object({
         search: z.string().optional(),
         take: z.string().optional(),
-        skip: z.string().optional(),
       })
     ),
     async (c) => {
       const auth = getAuth(c);
-      const { search, take, skip } = c.req.valid("query");
+      const { search, take } = c.req.valid("query");
 
       if (!auth?.userId) return c.json({ error: "Unauthorized" }, 401);
 
@@ -35,7 +34,6 @@ const app = new Hono()
       const documents = await prisma.document.findMany({
         where,
         take: Number(take) ?? 5,
-        skip: Number(skip) ?? 0,
         orderBy: { createdAt: "desc" },
       });
 
@@ -43,10 +41,7 @@ const app = new Hono()
         where,
       });
 
-      const remaining = Math.max(
-        0,
-        totalDocuments - (Number(skip ?? 0) + Number(take ?? 5))
-      );
+      const remaining = Math.max(0, totalDocuments - Number(take ?? 5));
 
       return c.json({ data: documents, remaining });
     }

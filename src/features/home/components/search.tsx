@@ -37,7 +37,6 @@ const Search = ({ hideOnMobile }: { hideOnMobile: boolean }) => {
           setFilters({
             search: e.target.value,
             take: null,
-            skip: null,
           })
         }
       />

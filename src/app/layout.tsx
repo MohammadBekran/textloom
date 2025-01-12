@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   title: "TextLoom - Home",
   description:
     "In this page, you can see all of your documents and create new ones",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({
