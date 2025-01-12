@@ -23,12 +23,18 @@ const app = new Hono()
 
       if (!auth?.userId) return c.json({ error: "Unauthorized" }, 401);
 
+      const ownerId = !auth.orgId
+        ? {
+            ownerId: auth.userId,
+          }
+        : {};
+
       const where: Prisma.DocumentWhereInput = {
-        ownerId: auth.userId,
         organizationId: auth.orgId ?? undefined,
         ...(search?.trim()
           ? { title: { contains: search.trim(), mode: "insensitive" } }
           : {}),
+        ...ownerId,
       };
 
       const documents = await prisma.document.findMany({
