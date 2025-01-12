@@ -7,6 +7,8 @@ import QueryProvider from "@/components/partials/providers/query-provider";
 import Toaster from "@/components/partials/providers/toaster";
 import { cn } from "@/lib/utils";
 
+import "@liveblocks/react-ui/styles.css";
+import "@liveblocks/react-tiptap/styles.css";
 import "./globals.css";
 
 const inter = Inter({

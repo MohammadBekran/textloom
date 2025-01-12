@@ -2,11 +2,14 @@ import { Hono } from "hono";
 import { handle } from "hono/vercel";
 
 import documents from "@/features/documents/core/server/route";
+import liveblocks from "@/features/liveblocks/core/server/route";
 
 const app = new Hono().basePath("/api");
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const routes = app.route("/documents", documents);
+const routes = app
+  .route("/documents", documents)
+  .route("/liveblocks", liveblocks);
 
 export const GET = handle(app);
 export const POST = handle(app);

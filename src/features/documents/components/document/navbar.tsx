@@ -259,8 +259,8 @@ const Navbar = () => {
             </MenubarMenu>
           </Menubar>
         </div>
-        <UserButtons />
       </div>
+      <UserButtons />
     </div>
   );
 };

@@ -103,8 +103,6 @@ const app = new Hono()
 
       if (!document) return c.json({ error: "Document not found" }, 404);
 
-      console.log(auth.orgRole);
-
       if (
         document.ownerId !== auth.userId ||
         (document.organizationId &&

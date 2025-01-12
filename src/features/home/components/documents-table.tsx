@@ -1,11 +1,9 @@
 "use client";
 
 import { LoaderIcon } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 import { useGetDocuments } from "@/features/documents/core/services/api/queries.api";
-import type { TDocument } from "@/features/documents/core/types";
 import DocumentRow from "@/features/home/components/document-row";
 import { useDocumentsFilter } from "@/features/home/core/hooks";
 
@@ -20,30 +18,20 @@ import {
 } from "@/components/ui/table";
 
 const DocumentsTable = () => {
-  const [accumulatedDocuments, setAccumulatedDocuments] = useState<TDocument[]>(
-    []
-  );
   const { filters, setFilters } = useDocumentsFilter();
   const [debouncedText] = useDebounce(filters.search, 1000);
   const { data: documents, isLoading: isDocumentsLoading } = useGetDocuments({
     query: {
       search: debouncedText ?? undefined,
       take: String(filters.take ?? 5),
-      skip: String(filters.skip ?? 5),
+      skip: String(filters.skip ?? 0),
     },
   });
-
-  useEffect(() => {
-    if (documents?.data) {
-      if (documents.data.length === 0) setAccumulatedDocuments([]);
-      else setAccumulatedDocuments((prev) => [...prev, ...documents.data]);
-    }
-  }, [documents?.data]);
 
   const handlePaginate = () => {
     setFilters((prev) => ({
       ...prev,
-      skip: (prev.skip ?? 0) + (prev.take ?? 5),
+      take: (prev.take ?? 5) + 5,
     }));
   };
 
@@ -63,7 +51,7 @@ const DocumentsTable = () => {
               <TableHead className="hidden md:table-cell">Created at</TableHead>
             </TableRow>
           </TableHeader>
-          {accumulatedDocuments.length === 0 ? (
+          {documents!.data.length === 0 ? (
             <TableBody>
               <TableRow className="hover:bg-transparent">
                 <TableCell
@@ -76,7 +64,7 @@ const DocumentsTable = () => {
             </TableBody>
           ) : (
             <TableBody>
-              {accumulatedDocuments.map((document, index) => (
+              {documents!.data.map((document, index) => (
                 <DocumentRow
                   key={`${document.id}-${index}`}
                   document={document}
