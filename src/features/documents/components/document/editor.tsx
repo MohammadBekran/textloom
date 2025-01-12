@@ -18,7 +18,6 @@ import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useParams } from "next/navigation";
 import ImageResize from "tiptap-extension-resize-image";
 
 import Ruler from "@/features/documents/components/document/ruler";
@@ -28,46 +27,22 @@ import {
   LineHeightExtension,
 } from "@/features/documents/core/extensions";
 import { useEditorStore } from "@/features/documents/core/hooks";
-import { useUpdateDocument } from "@/features/documents/core/services/api/mutations.api";
 
 import Threads from "@/components/threads";
-import { useDebounce } from "@/core/hooks";
 
 const Editor = ({ initialContent }: { initialContent: string }) => {
-  const { documentId } = useParams();
   const liveblocks = useLiveblocksExtension({
     initialContent,
     offlineSupport_experimental: true,
   });
   const leftMargin = useStorage((root) => root.leftMargin) ?? LEFT_MARGIN;
   const rightMargin = useStorage((root) => root.rightMargin) ?? RIGHT_MARGIN;
-  const { mutate: updateDocument } = useUpdateDocument();
   const { setEditor } = useEditorStore();
-
-  const saveToDatabase = (content: string) => {
-    updateDocument({
-      param: {
-        documentId: documentId as string,
-      },
-      json: {
-        content,
-      },
-    });
-  };
-
-  const debouncedSaveToDatabase = useDebounce(saveToDatabase, 3000);
 
   const editor = useEditor({
     autofocus: true,
     immediatelyRender: false,
     onCreate: ({ editor }) => setEditor(editor),
-    onUpdate: ({ editor }) => {
-      const content = JSON.stringify(editor.getJSON());
-
-      debouncedSaveToDatabase(content);
-
-      setEditor(editor);
-    },
     onSelectionUpdate: ({ editor }) => setEditor(editor),
     onTransaction: ({ editor }) => setEditor(editor),
     onFocus: ({ editor }) => setEditor(editor),
