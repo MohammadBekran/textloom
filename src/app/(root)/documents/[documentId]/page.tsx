@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import Document from "@/features/documents/components/document";
 import { getDocument } from "@/features/documents/core/actions";
 
+export const dynamic = "force-dynamic";
+
 interface IDocumentPageProps {
   params: Promise<{ documentId: string }>;
 }
