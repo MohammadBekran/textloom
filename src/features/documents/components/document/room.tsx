@@ -1,12 +1,13 @@
 "use client";
 
-import { ReactNode } from "react";
 import {
+  ClientSideSuspense,
   LiveblocksProvider,
   RoomProvider,
-  ClientSideSuspense,
 } from "@liveblocks/react/suspense";
+import { ReactNode } from "react";
 
+import { LEFT_MARGIN, RIGHT_MARGIN } from "@/features/documents/core/constants";
 import { useLiveblocksAuth } from "@/features/liveblocks/core/services/api/mutations.api";
 import { useGetUsers } from "@/features/liveblocks/core/services/api/queries.api";
 
@@ -20,6 +21,11 @@ interface IRoomProps {
 export const Room = ({ documentId, children }: IRoomProps) => {
   const { mutateAsync: liveblocksAuth } = useLiveblocksAuth();
   const { data: users } = useGetUsers();
+
+  const initialStorage = {
+    leftMargin: LEFT_MARGIN,
+    rightMargin: RIGHT_MARGIN,
+  };
 
   return (
     <LiveblocksProvider
@@ -48,7 +54,7 @@ export const Room = ({ documentId, children }: IRoomProps) => {
         return filteredUsers?.map((user) => user.id) ?? [];
       }}
     >
-      <RoomProvider id={documentId}>
+      <RoomProvider id={documentId} initialStorage={initialStorage}>
         <ClientSideSuspense fallback={<FullScreenLoader />}>
           {children}
         </ClientSideSuspense>
