@@ -21,6 +21,7 @@ import Link from "next/link";
 import { BsFilePdf } from "react-icons/bs";
 
 import DocumentInput from "@/features/documents/components/document/document-input";
+import Avatars from "@/features/documents/components/document/avatars";
 import { useEditorStore } from "@/features/documents/core/hooks";
 
 import {
@@ -260,7 +261,10 @@ const Navbar = () => {
           </Menubar>
         </div>
       </div>
-      <UserButtons />
+      <div className="flex items-center gap-3 pl-6">
+        <Avatars />
+        <UserButtons />
+      </div>
     </div>
   );
 };

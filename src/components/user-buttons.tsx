@@ -22,17 +22,15 @@ const UserButtons = () => {
   }, [organization, queryClient]);
 
   return (
-    <div className="flex items-center gap-3 pl-6">
-      <ClerkLoaded>
-        <OrganizationSwitcher
-          afterLeaveOrganizationUrl="/"
-          afterCreateOrganizationUrl=""
-          afterSelectOrganizationUrl=""
-          afterSelectPersonalUrl=""
-        />
-        <UserButton />
-      </ClerkLoaded>
-    </div>
+    <ClerkLoaded>
+      <OrganizationSwitcher
+        afterLeaveOrganizationUrl="/"
+        afterCreateOrganizationUrl=""
+        afterSelectOrganizationUrl=""
+        afterSelectPersonalUrl=""
+      />
+      <UserButton />
+    </ClerkLoaded>
   );
 };
 
