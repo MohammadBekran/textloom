@@ -22,6 +22,7 @@ import { BsFilePdf } from "react-icons/bs";
 
 import DocumentInput from "@/features/documents/components/document/document-input";
 import Avatars from "@/features/documents/components/document/avatars";
+import InboxNotifications from "@/features/documents/components/document/inbox-notifications";
 import { useEditorStore } from "@/features/documents/core/hooks";
 
 import {
@@ -262,6 +263,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="flex items-center gap-3 pl-6">
+        <InboxNotifications />
         <Avatars />
         <UserButtons />
       </div>
