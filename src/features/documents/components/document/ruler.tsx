@@ -1,15 +1,22 @@
 import { useMutation, useStorage } from "@liveblocks/react";
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
+
+import {
+  EDITOR_PAGE_SIZE,
+  LEFT_MARGIN,
+  RIGHT_MARGIN,
+  RULER_MAXIMUM_SPACE,
+} from "@/features/documents/core/constants";
 
 const markers = Array.from({ length: 83 }, (_, i) => i);
 
 const Ruler = () => {
-  const leftMargin = useStorage((root) => root.leftMargin) ?? 56;
+  const leftMargin = useStorage((root) => root.leftMargin) ?? LEFT_MARGIN;
   const setLeftMargin = useMutation(({ storage }, position: number) => {
     storage.set("leftMargin", position);
   }, []);
-  const rightMargin = useStorage((root) => root.rightMargin) ?? 56;
+  const rightMargin = useStorage((root) => root.rightMargin) ?? RIGHT_MARGIN;
   const setRightMargin = useMutation(({ storage }, position: number) => {
     storage.set("rightMargin", position);
   }, []);
@@ -22,25 +29,24 @@ const Ruler = () => {
   const handleRightMouseDown = () => setIsDraggingRight(true);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    const PAGE_WIDTH = 816;
-    const MINIMUM_SPACE = 100;
-
     if ((isDraggingLeft || isDraggingRight) && rulerRef.current) {
       const container = rulerRef.current.querySelector("#ruler-container");
 
       if (container) {
         const containerRect = container.getBoundingClientRect();
         const relativeX = e.clientX - containerRect.left;
-        const rowPosition = Math.max(0, Math.min(PAGE_WIDTH, relativeX));
+        const rowPosition = Math.max(0, Math.min(EDITOR_PAGE_SIZE, relativeX));
 
         if (isDraggingLeft) {
-          const maxLeftPosition = PAGE_WIDTH - leftMargin - MINIMUM_SPACE;
+          const maxLeftPosition =
+            EDITOR_PAGE_SIZE - leftMargin - RULER_MAXIMUM_SPACE;
           const newLeftPosition = Math.min(rowPosition, maxLeftPosition);
 
           setLeftMargin(newLeftPosition);
         } else if (isDraggingRight) {
-          const maxRightPosition = PAGE_WIDTH - (leftMargin + MINIMUM_SPACE);
-          const newRightPosition = Math.max(PAGE_WIDTH - rowPosition, 0);
+          const maxRightPosition =
+            EDITOR_PAGE_SIZE - (leftMargin + RULER_MAXIMUM_SPACE);
+          const newRightPosition = Math.max(EDITOR_PAGE_SIZE - rowPosition, 0);
           const constrainedRightPosition = Math.min(
             newRightPosition,
             maxRightPosition
@@ -67,7 +73,7 @@ const Ruler = () => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      className="w-[816px] h-6 relative mx-auto flex items-end select-none border-b border-gray-300 print:hidden"
+      className="w-816 h-6 relative mx-auto flex items-end select-none border-b border-gray-300 print:hidden"
     >
       <div id="ruler-container" className="size-full relative">
         <Marker
@@ -85,7 +91,7 @@ const Ruler = () => {
           onDoubleClick={handleRightDoubleClick}
         />
         <div className="absolute bottom-0 h-full inset-x-0">
-          <div className="w-[816px] h-full relative">
+          <div className="w-816 h-full relative">
             {markers.map((marker) => {
               const position = (marker * 816) / 82;
 

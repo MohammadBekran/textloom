@@ -20,9 +20,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { BsFilePdf } from "react-icons/bs";
 
-import DocumentInput from "@/features/documents/components/document/document-input";
 import Avatars from "@/features/documents/components/document/avatars";
+import CreateDocumentDialog from "@/features/documents/components/document/create-document-dialog";
+import DeleteDocumentDialog from "@/features/documents/components/document/delete-document-dialog";
+import DocumentInput from "@/features/documents/components/document/document-input";
 import InboxNotifications from "@/features/documents/components/document/inbox-notifications";
+import RenameDocumentDialog from "@/features/documents/components/document/rename-document-dialog";
 import { useEditorStore } from "@/features/documents/core/hooks";
 
 import {
@@ -39,7 +42,12 @@ import {
 } from "@/components/ui/menubar";
 import UserButtons from "@/components/user-buttons";
 
-const Navbar = () => {
+interface INavbarProps {
+  documentId: string;
+  documentTitle: string;
+}
+
+const Navbar = ({ documentId, documentTitle }: INavbarProps) => {
   const { editor } = useEditorStore();
 
   const handleUndo = () => editor?.chain().focus().undo().run();
@@ -97,7 +105,7 @@ const Navbar = () => {
       type: "application/json",
     });
 
-    handleDownload({ blob, fileName: "document.json" }); // TODO: Add the document name
+    handleDownload({ blob, fileName: `${documentTitle}.json` });
   };
 
   const handleSaveHTML = () => {
@@ -108,7 +116,7 @@ const Navbar = () => {
       type: "text/html",
     });
 
-    handleDownload({ blob, fileName: "document.html" }); // TODO: Add the document name
+    handleDownload({ blob, fileName: `${documentTitle}.html` });
   };
 
   const handleSaveText = () => {
@@ -119,7 +127,7 @@ const Navbar = () => {
       type: "text/plain",
     });
 
-    handleDownload({ blob, fileName: "document.txt" }); // TODO: Add the document name
+    handleDownload({ blob, fileName: `${documentTitle}.txt` });
   };
 
   const handlePrint = () => window.print();
@@ -131,7 +139,10 @@ const Navbar = () => {
           <Image src="/logo.svg" alt="Logo" width={36} height={36} />
         </Link>
         <div className="flex flex-col">
-          <DocumentInput />
+          <DocumentInput
+            documentId={documentId}
+            documentTitle={documentTitle}
+          />
           <Menubar className="h-auto border-none shadow-none p-0 bg-transparent">
             <MenubarMenu>
               <MenubarTrigger className="menubar-trigger">File</MenubarTrigger>
@@ -160,19 +171,37 @@ const Navbar = () => {
                     </MenubarItem>
                   </MenubarSubContent>
                 </MenubarSub>
-                <MenubarItem>
-                  <FilePlusIcon className="size-4 mr-2" />
-                  New Document
-                </MenubarItem>
+                <CreateDocumentDialog>
+                  <MenubarItem
+                    onClick={(e) => e.stopPropagation()}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <FilePlusIcon className="size-4 mr-2" />
+                    New Document
+                  </MenubarItem>
+                </CreateDocumentDialog>
                 <MenubarSeparator />
-                <MenubarItem>
-                  <FilePenIcon className="size-4 mr-2" />
-                  Rename
-                </MenubarItem>
-                <MenubarItem>
-                  <TrashIcon className="size-4 mr-2" />
-                  Trash
-                </MenubarItem>
+                <RenameDocumentDialog
+                  documentId={documentId}
+                  title={documentTitle}
+                >
+                  <MenubarItem
+                    onClick={(e) => e.stopPropagation()}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <FilePenIcon className="size-4 mr-2" />
+                    Rename
+                  </MenubarItem>
+                </RenameDocumentDialog>
+                <DeleteDocumentDialog documentId={documentId}>
+                  <MenubarItem
+                    onClick={(e) => e.stopPropagation()}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <TrashIcon className="size-4 mr-2" />
+                    Trash
+                  </MenubarItem>
+                </DeleteDocumentDialog>
                 <MenubarSeparator />
                 <MenubarItem onClick={handlePrint}>
                   <PrinterIcon className="size-4 mr-2" />

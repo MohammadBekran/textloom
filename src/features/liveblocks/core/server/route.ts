@@ -7,9 +7,10 @@ import { ContentfulStatusCode } from "hono/utils/http-status";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
+import { generateRandomColor } from "@/lib/utils";
 
 const liveblocks = new Liveblocks({
-  secret: process.env.NEXT_PUBLIC_LIVEBLOCKS_SECRET_KEY!,
+  secret: process.env.LIVEBLOCKS_SECRET_KEY!,
 });
 
 const app = new Hono()
@@ -30,6 +31,8 @@ const app = new Hono()
 
       const user = await currentUser();
 
+      if (!user) return c.json({ error: "Unauthorized" }, 401);
+
       const { room } = c.req.valid("json");
       const document = await prisma.document.findUnique({
         where: {
@@ -48,10 +51,16 @@ const app = new Hono()
         return c.json({ error: "Unauthorized" }, 401);
       }
 
+      const username =
+        user.fullName ?? user.primaryEmailAddress?.emailAddress ?? "Anonymous";
+
+      const color = generateRandomColor(username);
+
       const session = liveblocks.prepareSession(auth.userId, {
         userInfo: {
-          name: user?.fullName ?? "Anonymous",
-          avatar: user?.imageUrl,
+          name: username,
+          avatar: user.imageUrl,
+          color,
         },
       });
 

@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/lib/utils";
 
 interface IRenameDocumentDialogProps {
   documentId: string;
@@ -49,7 +50,11 @@ const RenameDocumentDialog = ({
         },
       },
       {
-        onSuccess: () => setIsOpenDialog(false),
+        onSuccess: () => {
+          toast.success("Document updated");
+
+          setIsOpenDialog(false);
+        },
       }
     );
   };

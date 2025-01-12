@@ -28,7 +28,6 @@ export const useLiveblocksAuth = () => {
 
       return await response.json();
     },
-    onSuccess: () => toast.success("Authorized"),
     onError: () => toast.error("Failed to authorize"),
   });
 

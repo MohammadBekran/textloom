@@ -12,7 +12,7 @@ const Header = () => {
         <span className="text-xl">TextLoom</span>
       </div>
       <Search hideOnMobile />
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-3">
         <UserButtons />
       </div>
     </div>

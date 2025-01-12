@@ -51,6 +51,26 @@ const app = new Hono()
       return c.json({ data: documents, remaining });
     }
   )
+  .get("/:documentId", clerkMiddleware(), async (c) => {
+    try {
+      const auth = getAuth(c);
+      const { documentId } = c.req.param();
+
+      if (!auth?.userId) return c.json({ error: "Unauthorized" }, 401);
+
+      const document = await prisma.document.findUnique({
+        where: {
+          id: documentId,
+        },
+      });
+
+      if (!document) return c.json({ error: "Document not found" }, 404);
+
+      return c.json({ data: document });
+    } catch {
+      return c.json({ error: "Something went wrong" }, 400);
+    }
+  })
   .post(
     "/",
     clerkMiddleware(),
@@ -85,13 +105,14 @@ const app = new Hono()
     zValidator(
       "json",
       z.object({
-        title: z.string(),
+        title: z.string().optional(),
+        content: z.string().optional(),
       })
     ),
     async (c) => {
       const auth = getAuth(c);
       const { documentId } = c.req.param();
-      const { title } = c.req.valid("json");
+      const { title, content } = c.req.valid("json");
 
       if (!auth?.userId) return c.json({ error: "Unauthorized" }, 401);
 
@@ -105,8 +126,11 @@ const app = new Hono()
 
       if (
         document.ownerId !== auth.userId ||
-        (document.organizationId &&
-          (document.organizationId !== auth.orgId || auth.orgRole !== "admin"))
+        !!(
+          document.organizationId &&
+          (document.organizationId !== auth.orgId ||
+            auth.orgRole !== "org:admin")
+        )
       ) {
         return c.json({ error: "Unauthorized" }, 401);
       }
@@ -117,7 +141,8 @@ const app = new Hono()
           ownerId: auth.userId,
         },
         data: {
-          title,
+          title: title ?? undefined,
+          initialContent: content ?? undefined,
         },
       });
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { useDeleteDocument } from "@/features/documents/core/services/api/mutations.api";
 
@@ -23,6 +24,7 @@ const DeleteDocumentDialog = ({
   documentId,
   children,
 }: IDeleteDocumentDialogProps) => {
+  const router = useRouter();
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   const { mutate: deleteDocument, isPending: isDeletingDocumentPending } =
     useDeleteDocument();
@@ -37,7 +39,11 @@ const DeleteDocumentDialog = ({
         },
       },
       {
-        onSuccess: () => setIsOpenDialog(false),
+        onSuccess: () => {
+          setIsOpenDialog(false);
+
+          router.push("/");
+        },
       }
     );
   };

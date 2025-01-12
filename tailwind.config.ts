@@ -10,6 +10,9 @@ export default {
   ],
   theme: {
     extend: {
+      width: {
+        816: "816px",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

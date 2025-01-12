@@ -77,8 +77,6 @@ export const useUpdateDocument = () => {
       return await response.json();
     },
     onSuccess: ({ data }) => {
-      toast.success("Document updated");
-
       queryClient.invalidateQueries({
         queryKey: ["documents"],
       });

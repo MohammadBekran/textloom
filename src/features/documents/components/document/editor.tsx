@@ -1,5 +1,6 @@
 "use client";
 
+import { useStorage } from "@liveblocks/react";
 import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 import { Color } from "@tiptap/extension-color";
 import FontFamily from "@tiptap/extension-font-family";
@@ -17,28 +18,56 @@ import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { useParams } from "next/navigation";
 import ImageResize from "tiptap-extension-resize-image";
-import { useStorage } from "@liveblocks/react";
 
 import Ruler from "@/features/documents/components/document/ruler";
+import { LEFT_MARGIN, RIGHT_MARGIN } from "@/features/documents/core/constants";
 import {
   FontSizeExtension,
   LineHeightExtension,
 } from "@/features/documents/core/extensions";
 import { useEditorStore } from "@/features/documents/core/hooks";
+import { useUpdateDocument } from "@/features/documents/core/services/api/mutations.api";
 
 import Threads from "@/components/threads";
+import { useDebounce } from "@/core/hooks";
 
-const Editor = () => {
-  const liveblocks = useLiveblocksExtension();
-  const leftMargin = useStorage((root) => root.leftMargin) ?? 56;
-  const rightMargin = useStorage((root) => root.rightMargin) ?? 56;
+const Editor = ({ initialContent }: { initialContent: string }) => {
+  const { documentId } = useParams();
+  const liveblocks = useLiveblocksExtension({
+    initialContent,
+    offlineSupport_experimental: true,
+  });
+  const leftMargin = useStorage((root) => root.leftMargin) ?? LEFT_MARGIN;
+  const rightMargin = useStorage((root) => root.rightMargin) ?? RIGHT_MARGIN;
+  const { mutate: updateDocument } = useUpdateDocument();
   const { setEditor } = useEditorStore();
+
+  const saveToDatabase = (content: string) => {
+    updateDocument({
+      param: {
+        documentId: documentId as string,
+      },
+      json: {
+        content,
+      },
+    });
+  };
+
+  const debouncedSaveToDatabase = useDebounce(saveToDatabase, 3000);
+
   const editor = useEditor({
     autofocus: true,
     immediatelyRender: false,
     onCreate: ({ editor }) => setEditor(editor),
-    onUpdate: ({ editor }) => setEditor(editor),
+    onUpdate: ({ editor }) => {
+      const content = JSON.stringify(editor.getJSON());
+
+      debouncedSaveToDatabase(content);
+
+      setEditor(editor);
+    },
     onSelectionUpdate: ({ editor }) => setEditor(editor),
     onTransaction: ({ editor }) => setEditor(editor),
     onFocus: ({ editor }) => setEditor(editor),
@@ -48,7 +77,7 @@ const Editor = () => {
     editorProps: {
       attributes: {
         class:
-          "w-[816px] min-h-[1024px] flex flex-col pt-10 pb-10 pr-14 cursor-text bg-white border border-[#C7C7C7] focus:outline-none print:border-0",
+          "w-816 min-h-[1024px] flex flex-col pt-10 pb-10 pr-14 cursor-text bg-white border border-[#C7C7C7] focus:outline-none print:border-0",
         style: `padding-left: ${leftMargin}px; padding-right:${rightMargin}px`,
       },
     },
@@ -93,7 +122,7 @@ const Editor = () => {
   return (
     <div className="size-full overflow-x-auto px-4 bg-[#F9FBFD] print:p-0 print:bg-white print:overflow-visible">
       <Ruler />
-      <div className="w-[816px] min-w-max flex justify-center mx-auto py-4 print:py-0 after:print:w-full print:min-w-0">
+      <div className="w-816 min-w-max flex justify-center mx-auto py-4 print:py-0 after:print:w-full print:min-w-0">
         <EditorContent editor={editor} />
         <Threads editor={editor} />
       </div>

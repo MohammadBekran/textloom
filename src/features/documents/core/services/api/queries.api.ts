@@ -11,6 +11,14 @@ type TGetDocumentsResponse = InferResponseType<
   200
 >;
 
+type TGetDocumentRequest = InferRequestType<
+  (typeof client.api.documents)[":documentId"]["$get"]
+>;
+type TGetDocumentResponse = InferResponseType<
+  (typeof client.api.documents)[":documentId"]["$get"],
+  200
+>;
+
 export const useGetDocuments = ({
   query: documentsQuery,
 }: TGetDocumentsRequest) => {
@@ -22,6 +30,23 @@ export const useGetDocuments = ({
       });
 
       if (!response.ok) throw new Error("Failed to get the documents");
+
+      return await response.json();
+    },
+  });
+
+  return query;
+};
+
+export const useGetDocument = ({ param }: TGetDocumentRequest) => {
+  const query = useQuery<TGetDocumentResponse, Error>({
+    queryKey: ["document", param.documentId],
+    queryFn: async () => {
+      const response = await client.api.documents[":documentId"]["$get"]({
+        param,
+      });
+
+      if (!response.ok) throw new Error("Failed to get the document");
 
       return await response.json();
     },

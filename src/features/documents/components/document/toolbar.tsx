@@ -2,35 +2,29 @@
 
 import type { Level } from "@tiptap/extension-heading";
 import {
-  AlignCenterIcon,
-  AlignJustifyIcon,
   AlignLeftIcon,
-  AlignRightIcon,
-  BoldIcon,
   ChevronDownIcon,
   HighlighterIcon,
   ImageIcon,
-  ItalicIcon,
   Link2Icon,
   ListCollapseIcon,
   ListIcon,
-  ListTodoIcon,
-  MessageSquarePlusIcon,
   MinusIcon,
   PlusIcon,
-  PrinterIcon,
-  Redo2Icon,
-  RemoveFormattingIcon,
   SearchIcon,
-  SpellCheckIcon,
-  UnderlineIcon,
-  Undo2Icon,
   UploadIcon,
   type LucideIcon,
 } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { SketchPicker, type ColorResult } from "react-color";
 
+import {
+  ALIGNMENT_OPTIONS,
+  HEADINGS,
+  LINE_HEIGHT_OPTIONS,
+  LIST_OPTIONS,
+  TOOLBAR_SECTIONS,
+} from "@/features/documents/core/constants";
 import { useEditorStore } from "@/features/documents/core/hooks";
 
 import { Button } from "@/components/ui/button";
@@ -59,14 +53,6 @@ interface IToolbarButtonProps {
 
 const LineHeightButton = () => {
   const { editor } = useEditorStore();
-
-  const LINE_HEIGHT_OPTIONS = [
-    { label: "Default", value: "normal" },
-    { label: "Single", value: "1" },
-    { label: "1.15", value: "1.15" },
-    { label: "1.5", value: "1.5" },
-    { label: "Double", value: "2" },
-  ];
 
   const lineHeight = editor?.getAttributes("paragraph").lineHeight;
 
@@ -188,20 +174,7 @@ const FontSizeButton = () => {
 const ListButton = () => {
   const { editor } = useEditorStore();
 
-  const LIST_OPTIONS = [
-    {
-      label: "Bullet List",
-      icon: ListIcon,
-      isActive: () => editor?.isActive("bulletList"),
-      onClick: () => editor?.chain().focus().toggleBulletList().run(),
-    },
-    {
-      label: "Ordered List",
-      icon: ListIcon,
-      isActive: () => editor?.isActive("orderedList"),
-      onClick: () => editor?.chain().focus().toggleOrderedList().run(),
-    },
-  ];
+  const listOptions = LIST_OPTIONS(editor);
 
   return (
     <DropdownMenu>
@@ -211,7 +184,7 @@ const ListButton = () => {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="flex flex-col gap-y-1 p-1">
-        {LIST_OPTIONS.map(({ label, icon: Icon, isActive, onClick }) => (
+        {listOptions.map(({ label, icon: Icon, isActive, onClick }) => (
           <button
             key={label}
             className={cn(
@@ -237,29 +210,6 @@ const AlignmentButton = () => {
   const isAlignmentActive = (alignment: string) => {
     editor?.isActive({ textAlign: alignment });
   };
-
-  const ALIGNMENT_OPTIONS = [
-    {
-      label: "Align Left",
-      value: "left",
-      icon: AlignLeftIcon,
-    },
-    {
-      label: "Align Center",
-      value: "center",
-      icon: AlignCenterIcon,
-    },
-    {
-      label: "Align Right",
-      value: "right",
-      icon: AlignRightIcon,
-    },
-    {
-      label: "Align Justify",
-      value: "justify",
-      icon: AlignJustifyIcon,
-    },
-  ];
 
   const handleAlignClick = (alignment: string) => {
     editor?.chain().focus().setTextAlign(alignment).run();
@@ -460,39 +410,6 @@ const TextColorButton = () => {
 const HeadingLevelButton = () => {
   const { editor } = useEditorStore();
 
-  const HEADINGS = [
-    {
-      label: "Normal text",
-      value: 0,
-      fontSize: "16px",
-    },
-    {
-      label: "Heading 1",
-      value: 1,
-      fontSize: "32px",
-    },
-    {
-      label: "Heading 2",
-      value: 2,
-      fontSize: "24px",
-    },
-    {
-      label: "Heading 3",
-      value: 3,
-      fontSize: "20px",
-    },
-    {
-      label: "Heading 4",
-      value: 4,
-      fontSize: "18px",
-    },
-    {
-      label: "Heading 5",
-      value: 5,
-      fontSize: "16px",
-    },
-  ];
-
   const getCurrentHeading = () => {
     for (const level of HEADINGS) {
       if (editor?.isActive("heading", { level: level.value }))
@@ -614,105 +531,32 @@ const ToolbarButton = ({
 const Toolbar = () => {
   const { editor } = useEditorStore();
 
-  const TOOLBAR_SECTIONS: {
-    label: string;
-    icon: LucideIcon;
-    isActive?: boolean;
-    onClick: () => void;
-  }[][] = [
-    [
-      {
-        label: "Undo",
-        icon: Undo2Icon,
-        onClick: () => editor?.chain().focus().undo().run(),
-      },
-      {
-        label: "Redo",
-        icon: Redo2Icon,
-        onClick: () => editor?.chain().focus().redo().run(),
-      },
-      {
-        label: "Print",
-        icon: PrinterIcon,
-        onClick: () => window.print(),
-      },
-      {
-        label: "Spell Check",
-        icon: SpellCheckIcon,
-        onClick: () => {
-          const current = editor?.view.dom.getAttribute("spellcheck");
-
-          editor?.view.dom.setAttribute(
-            "spellcheck",
-            current === "false" ? "true" : "false"
-          );
-        },
-      },
-    ],
-    [
-      {
-        label: "Bold",
-        icon: BoldIcon,
-        isActive: editor?.isActive("bold"),
-        onClick: () => editor?.chain().focus().toggleBold().run(),
-      },
-      {
-        label: "Italic",
-        icon: ItalicIcon,
-        isActive: editor?.isActive("italic"),
-        onClick: () => editor?.chain().focus().toggleItalic().run(),
-      },
-      {
-        label: "Underline",
-        icon: UnderlineIcon,
-        isActive: editor?.isActive("underline"),
-        onClick: () => editor?.chain().focus().toggleUnderline().run(),
-      },
-    ],
-    [
-      {
-        label: "Comments",
-        icon: MessageSquarePlusIcon,
-        isActive: editor?.isActive("liveblocksCommentMark"),
-        onClick: () => editor?.chain().focus().addPendingComment().run(),
-      },
-      {
-        label: "List Todo",
-        icon: ListTodoIcon,
-        isActive: editor?.isActive("taskList"),
-        onClick: () => editor?.chain().focus().toggleTaskList().run(),
-      },
-      {
-        label: "Remove Formatting",
-        icon: RemoveFormattingIcon,
-        onClick: () => editor?.chain().focus().unsetAllMarks().run(),
-      },
-    ],
-  ];
+  const toolbarSection = TOOLBAR_SECTIONS(editor);
 
   return (
     <div className="min-h-[40px] overflow-auto flex items-center gap-x-0.5 rounded-[24px] py-0.5 px-2.5 bg-[#F1F4F9]">
-      {TOOLBAR_SECTIONS[0].map((item) => (
+      {toolbarSection[0].map((item) => (
         <ToolbarButton key={item.label} {...item} />
       ))}
-      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      <Separator orientation="vertical" className="toolbar-separator" />
       <FontFamilyButton />
-      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      <Separator orientation="vertical" className="toolbar-separator" />
       <HeadingLevelButton />
+      <Separator orientation="vertical" className="toolbar-separator" />
       <FontSizeButton />
-      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
-      {TOOLBAR_SECTIONS[1].map((item) => (
+      <Separator orientation="vertical" className="toolbar-separator" />
+      {toolbarSection[1].map((item) => (
         <ToolbarButton key={item.label} {...item} />
       ))}
       <TextColorButton />
       <HighlightColorButton />
+      <Separator orientation="vertical" className="toolbar-separator" />
       <LinkButton />
       <ImageButton />
       <AlignmentButton />
       <LineHeightButton />
       <ListButton />
-      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
-      {TOOLBAR_SECTIONS[2].map((item) => (
+      {toolbarSection[2].map((item) => (
         <ToolbarButton key={item.label} {...item} />
       ))}
     </div>
