@@ -7,6 +7,7 @@ import {
 } from "@liveblocks/react/suspense";
 import { ReactNode } from "react";
 
+import { getDocumentsByIds } from "@/features/documents/core/actions";
 import { LEFT_MARGIN, RIGHT_MARGIN } from "@/features/documents/core/constants";
 import { useLiveblocksAuth } from "@/features/liveblocks/core/services/api/mutations.api";
 import { useGetUsers } from "@/features/liveblocks/core/services/api/queries.api";
@@ -52,6 +53,14 @@ export const Room = ({ documentId, children }: IRoomProps) => {
         }
 
         return filteredUsers?.map((user) => user.id) ?? [];
+      }}
+      resolveRoomsInfo={async ({ roomIds }) => {
+        const documents = await getDocumentsByIds(roomIds);
+
+        return documents.map(({ id, title }) => ({
+          id,
+          name: title,
+        }));
       }}
     >
       <RoomProvider id={documentId} initialStorage={initialStorage}>
