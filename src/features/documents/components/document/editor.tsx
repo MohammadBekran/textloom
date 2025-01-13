@@ -52,7 +52,7 @@ const Editor = ({ initialContent }: { initialContent: string }) => {
     editorProps: {
       attributes: {
         class:
-          "w-816 min-h-[1024px] flex flex-col pt-10 pb-10 pr-14 cursor-text bg-white border border-[#C7C7C7] focus:outline-none print:border-0",
+          "lg:w-816 lg:min-h-[1024px] flex flex-col pt-10 pb-10 pr-14 cursor-text bg-white border border-[#C7C7C7] focus:outline-none print:border-0",
         style: `padding-left: ${leftMargin}px; padding-right:${rightMargin}px`,
       },
     },
@@ -96,8 +96,10 @@ const Editor = ({ initialContent }: { initialContent: string }) => {
 
   return (
     <div className="size-full overflow-x-auto px-4 bg-[#F9FBFD] print:p-0 print:bg-white print:overflow-visible">
-      <Ruler />
-      <div className="w-816 min-w-max flex justify-center mx-auto py-4 print:py-0 after:print:w-full print:min-w-0">
+      <div className="hidden lg:block">
+        <Ruler />
+      </div>
+      <div className="lg:w-816 min-w-max flex justify-center mx-auto py-4 print:py-0 after:print:w-full print:min-w-0">
         <EditorContent editor={editor} />
         <Threads editor={editor} />
       </div>

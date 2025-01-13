@@ -291,7 +291,7 @@ const Navbar = ({ documentId, documentTitle }: INavbarProps) => {
           </Menubar>
         </div>
       </div>
-      <div className="flex items-center gap-3 pl-6">
+      <div className="hidden items-center gap-3 pl-6 lg:flex">
         <InboxNotifications />
         <Avatars />
         <UserButtons />
