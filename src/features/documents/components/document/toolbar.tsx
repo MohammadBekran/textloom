@@ -58,17 +58,17 @@ const LineHeightButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Tooltip
-          trigger={
+      <Tooltip
+        trigger={
+          <DropdownMenuTrigger asChild>
             <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
               <ListCollapseIcon className="size-4" />
             </button>
-          }
-        >
-          Line Height
-        </Tooltip>
-      </DropdownMenuTrigger>
+          </DropdownMenuTrigger>
+        }
+      >
+        Line Height
+      </Tooltip>
       <DropdownMenuContent className="flex flex-col gap-y-1 p-1">
         {LINE_HEIGHT_OPTIONS.map(({ label, value }) => (
           <button
@@ -192,17 +192,17 @@ const ListButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Tooltip
-          trigger={
+      <Tooltip
+        trigger={
+          <DropdownMenuTrigger asChild>
             <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
               <ListIcon className="size-4" />
             </button>
-          }
-        >
-          List
-        </Tooltip>
-      </DropdownMenuTrigger>
+          </DropdownMenuTrigger>
+        }
+      >
+        List
+      </Tooltip>
       <DropdownMenuContent className="flex flex-col gap-y-1 p-1">
         {listOptions.map(({ label, icon: Icon, isActive, onClick }) => (
           <button
@@ -237,17 +237,17 @@ const AlignmentButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Tooltip
-          trigger={
+      <Tooltip
+        trigger={
+          <DropdownMenuTrigger asChild>
             <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
               <AlignLeftIcon className="size-4" />
             </button>
-          }
-        >
-          Alignment
-        </Tooltip>
-      </DropdownMenuTrigger>
+          </DropdownMenuTrigger>
+        }
+      >
+        Alignment
+      </Tooltip>
       <DropdownMenuContent className="flex flex-col gap-y-1 p-1">
         {ALIGNMENT_OPTIONS.map(({ label, value, icon: Icon }) => (
           <button
@@ -311,17 +311,17 @@ const ImageButton = () => {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Tooltip
-            trigger={
+        <Tooltip
+          trigger={
+            <DropdownMenuTrigger asChild>
               <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
                 <ImageIcon className="size-4" />
               </button>
-            }
-          >
-            Image
-          </Tooltip>
-        </DropdownMenuTrigger>
+            </DropdownMenuTrigger>
+          }
+        >
+          Image
+        </Tooltip>
         <DropdownMenuContent>
           <DropdownMenuItem
             className="cursor-pointer"
@@ -375,17 +375,17 @@ const LinkButton = () => {
 
   return (
     <DropdownMenu onOpenChange={handleOpenChange}>
-      <DropdownMenuTrigger asChild>
-        <Tooltip
-          trigger={
+      <Tooltip
+        trigger={
+          <DropdownMenuTrigger asChild>
             <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
               <Link2Icon className="size-4" />
             </button>
-          }
-        >
-          Link
-        </Tooltip>
-      </DropdownMenuTrigger>
+          </DropdownMenuTrigger>
+        }
+      >
+        Link
+      </Tooltip>
       <DropdownMenuContent className="flex items-center gap-x-2 p-2.5">
         <Input
           value={value}
@@ -409,17 +409,17 @@ const HighlightColorButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Tooltip
-          trigger={
+      <Tooltip
+        trigger={
+          <DropdownMenuTrigger asChild>
             <button className="min-w-7 h-7 overflow-hidden flex justify-center items-center shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
               <HighlighterIcon className="size-4" />
             </button>
-          }
-        >
-          Highlight
-        </Tooltip>
-      </DropdownMenuTrigger>
+          </DropdownMenuTrigger>
+        }
+      >
+        Highlight
+      </Tooltip>
       <DropdownMenuContent className="p-0">
         <SketchPicker color={value} onChange={handleColorChange} />
       </DropdownMenuContent>
@@ -438,9 +438,9 @@ const TextColorButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Tooltip
-          trigger={
+      <Tooltip
+        trigger={
+          <DropdownMenuTrigger asChild>
             <button className="min-w-7 h-7 flex flex-col justify-center items-center overflow-hidden shrink-0 rounded-sm text-sm px-1.5 hover:bg-neutral-200/80">
               <span className="text-xs">A</span>
               <div
@@ -448,11 +448,11 @@ const TextColorButton = () => {
                 style={{ backgroundColor: value }}
               />
             </button>
-          }
-        >
-          Text Color
-        </Tooltip>
-      </DropdownMenuTrigger>
+          </DropdownMenuTrigger>
+        }
+      >
+        Text Color
+      </Tooltip>
       <DropdownMenuContent className="p-0">
         <SketchPicker color={value} onChange={handleColorChange} />
       </DropdownMenuContent>

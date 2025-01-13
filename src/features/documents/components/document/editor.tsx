@@ -52,7 +52,7 @@ const Editor = ({ initialContent }: { initialContent: string }) => {
     editorProps: {
       attributes: {
         class:
-          "lg:w-816 lg:min-h-[1024px] flex flex-col pt-10 pb-10 pr-14 cursor-text bg-white border border-[#C7C7C7] focus:outline-none print:border-0",
+          "min-w-[400px] max-w-[400px] md:max-w-[700px] md:w-[700px] min-h-screen flex flex-col pt-10 pb-10 pr-14 cursor-text bg-white border border-[#C7C7C7] focus:outline-none print:border-0 lg:!min-w-816 lg:!max-w-816 lg:!w-816 lg:min-h-[1024px]",
         style: `padding-left: ${leftMargin}px; padding-right:${rightMargin}px`,
       },
     },

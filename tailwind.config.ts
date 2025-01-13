@@ -13,6 +13,12 @@ export default {
       width: {
         816: "816px",
       },
+      maxWidth: {
+        816: "816px",
+      },
+      minWidth: {
+        816: "816px",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
