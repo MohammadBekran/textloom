@@ -1,5 +1,5 @@
 import { useMutation, useStorage } from "@liveblocks/react";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 
 import {
